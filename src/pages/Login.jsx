@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
+import { userLogin } from "../api/jobsApi";
+
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context";
+
+let api_token;
+let data;
 
 const Login = () => {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const { setJobData, setLoggedIn, page, setPage } = useContext(AuthContext);
+
+	const navigate = useNavigate();
+
+	const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
+
+	const authorize = async () => {
+		const response = await axios.post(`${BASE_URL}/auth/login`, {
+			email: email,
+			password: password,
+		});
+		api_token = response.data.data.token;
+		setLoggedIn(true);
+
+		const fetchData = async () => {
+			const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
+				headers: { Authorization: `${api_token}` },
+			});
+
+			data = response.data.data;
+			setJobData(data);
+			navigate('/dashboard')
+		};
+		fetchData();
+	};
+
+
 	return (
 		<div className="bg-[#f1faee] h-[100vh]">
 			<header className="bg-[#1d3557] text-white h-[50vh]">
@@ -21,6 +58,8 @@ const Login = () => {
 							type="email"
 							name="email"
 							placeholder="Enter your email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
 						/>
 					</div>
 					<div className="mb-6">
@@ -33,10 +72,12 @@ const Login = () => {
 							type="password"
 							name="password"
 							placeholder="Enter your password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
 						/>
 					</div>
-					<div class="flex items-center justify-between">
-						<Button>Login</Button>
+					<div className="flex items-center justify-between">
+						<Button onClick={authorize}>Login</Button>
 					</div>
 				</form>
 			</div>
