@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../Context";
@@ -6,17 +6,74 @@ import { AiFillHome } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import axios from "axios";
+import ApplicantModal from "../components/Modal";
+
+const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
 
 const JobList = () => {
-	const { loggedIn, jobData, page, setPage, token } = useContext(AuthContext);
-	
-  // useEffect(() => {
-  //   getAllJobs(token, )
-  // }, [page])
+	const [open, setOpen] = useState(false);
 
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
+	const {
+		email,
+		password,
+		loggedIn,
+		jobData,
+		setJobData,
+		page,
+		setPage,
+		setLoggedIn,
+		setApplicantData,
+	} = useContext(AuthContext);
+	useEffect(() => {
+		handleChange();
+	}, [page]);
+
+	const handleOpen = async (id) => {
+		setOpen(true);
+		let api_token;
+		let data;
+		const response = await axios.post(`${BASE_URL}/auth/login`, {
+			email: email,
+			password: password,
+		});
+		api_token = response.data.data.token;
+
+		const fetchApplicantData = async () => {
+			const response = await axios.get(`${BASE_URL}/recruiters/jobs/${id}/candidates`, {
+				headers: { Authorization: `${api_token}` },
+			});
+			data = response.data.data;
+			console.log(data);
+			setApplicantData(data);
+		};
+		fetchApplicantData();
+	};
+	const handleClose = () => setOpen(false);
+
+	const handleChange = (event, value) => {
+		setPage(value);
+		const authorize = async () => {
+			let api_token;
+			let data;
+			const response = await axios.post(`${BASE_URL}/auth/login`, {
+				email: email,
+				password: password,
+			});
+			api_token = response.data.data.token;
+			setLoggedIn(true);
+
+			const fetchData = async () => {
+				const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
+					headers: { Authorization: `${api_token}` },
+				});
+				data = response.data.data;
+				setJobData(data);
+			};
+			fetchData();
+		};
+		authorize();
+	};
 
 	return (
 		<div className="bg-[#f1faee]">
@@ -50,18 +107,23 @@ const JobList = () => {
 									<MdLocationOn />
 									{job.location}
 								</span>
-								<button className="text-sm border-none outline-none bg-[#ade8f4] p-2 rounded-md font-medium text-[#1d3557] hover:bg-[#0a89a3] hover:text-white transition-all duration-100">
+								<button
+									onClick={() => handleOpen(job.id)}
+									className="text-sm border-none outline-none bg-[#ade8f4] p-2 rounded-md font-medium text-[#1d3557] hover:bg-[#0a89a3] hover:text-white transition-all duration-100"
+								>
 									View Applications
 								</button>
+								{open && <ApplicantModal open={open} handleClose={handleClose} />}
 							</div>
 						</div>
 					);
 				})}
+				<div className="mb-8">
+					<Stack spacing={1}>
+						<Pagination count={10} page={page} onChange={handleChange} size="large" />
+					</Stack>
+				</div>
 			</div>
-
-			<Stack spacing={2}>
-				<Pagination count={20} page={page} onChange={handleChange} />
-			</Stack>
 		</div>
 	);
 };

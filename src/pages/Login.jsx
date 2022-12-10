@@ -1,31 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
-import { userLogin } from "../api/jobsApi";
+
 
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context";
 
-let api_token;
-let data;
-
 const Login = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const { setJobData, setLoggedIn, page, setPage } = useContext(AuthContext);
+	
+	const { email, setEmail, password, setPassword,setJobData, setLoggedIn, page, setToken } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
 	const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
 
 	const authorize = async () => {
+		let api_token;
+		let data;
 		const response = await axios.post(`${BASE_URL}/auth/login`, {
 			email: email,
 			password: password,
 		});
 		api_token = response.data.data.token;
 		setLoggedIn(true);
+		setToken(api_token);
 
 		const fetchData = async () => {
 			const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
@@ -34,11 +33,11 @@ const Login = () => {
 
 			data = response.data.data;
 			setJobData(data);
-			navigate('/dashboard')
+			
+			navigate("/dashboard");
 		};
 		fetchData();
 	};
-
 
 	return (
 		<div className="bg-[#f1faee] h-[100vh]">
