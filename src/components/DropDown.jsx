@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import { AiOutlineCaretDown } from "react-icons/ai";
 import { AuthContext } from "../Context";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { logoutToaster } from "../Toaster";
 
 const DropDown = () => {
 	const [open, setOpen] = React.useState(false);
@@ -37,19 +37,6 @@ const DropDown = () => {
 			setOpen(false);
 		}
 	}
-
-	const logoutToaster = () =>
-		toast.info("Logged Out!", {
-			containerId: "logout",
-			position: "top-right",
-			autoClose: 2000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "light",
-		});
 
 	const handleLogout = () => {
 		setLoggedIn(false);

@@ -5,7 +5,7 @@ import { AuthContext } from "../Context";
 import { AiFillHome } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
+
 import ApplicantModal from "../components/Modal";
 import notes from "../assets/notes.png";
 import Button from "../components/Button";
@@ -13,25 +13,19 @@ import { getApplicantsByJobId, getRecruiterJobs } from "../api/jobsApi";
 
 const JobList = () => {
 	const [open, setOpen] = useState(false);
-	const { loggedIn, jobData, setJobData, page, setPage, setLoggedIn, setApplicantData, totalPage, token } =
-		useContext(AuthContext);
+	const { loggedIn, jobData, setJobData, page, setPage, setApplicantData, totalPage, token } = useContext(AuthContext);
 
 	useEffect(() => {
-		handlePage();
-		// eslint-disable-next-line
-	}, [setPage, page]);
-
+		getRecruiterJobs(token, page, setJobData);
+	},[page, setJobData, token])
 	const handleOpen = async (id) => {
 		setOpen(true);
 		getApplicantsByJobId(id, token, setApplicantData);
-		
 	};
 	const handleClose = () => setOpen(false);
 
 	const handlePage = (event, value) => {
 		setPage(value);
-		setLoggedIn(true);
-		getRecruiterJobs(token, page, setJobData);
 	};
 
 	return (
@@ -47,7 +41,7 @@ const JobList = () => {
 									Home
 								</Link>
 							</span>
-							<h2 className="font-medium text-2xl">Jobs posted by you</h2>
+							<h2 className="font-medium lg:text-2xl text-xl">Jobs posted by you</h2>
 						</div>
 					</header>
 				</div>
@@ -60,19 +54,19 @@ const JobList = () => {
 				</div>
 			) : (
 				<div>
-					<div className="flex flex-wrap justify-center gap-4">
+					<div className="flex md:flex-row sm:flex-col flex-wrap justify-center gap-4">
 						{jobData.data.data.map((job) => {
 							return (
 								<div
 									key={job.id}
-									className="flex flex-col w-[20%] bg-white text-ellipsis p-4 rounded-md relative top-[-8em] shadow-md"
+									className="flex flex-col md:w-[20%] w-[80%] bg-white text-ellipsis p-4 rounded-md relative top-[-8em] shadow-md"
 								>
-									<h2 className="text-[#1d3557] text-xl font-medium break-words">{job.title}</h2>
+									<h2 className="text-[#1d3557] lg:text-xl  font-medium break-words">{job.title}</h2>
 									<p className="text-gray-500 text-sm font-medium break-words mt-4">{job.description}</p>
 									<div className="flex items-center justify-between flex-wrap mt-12">
 										<span className="flex text-sm items-center">
 											<MdLocationOn />
-											<p className="break-words">{job.location}</p>
+											<p className="break-words text-clip">{job.location}</p>
 										</span>
 										<button
 											onClick={() => handleOpen(job.id)}
@@ -87,15 +81,14 @@ const JobList = () => {
 						})}
 					</div>
 					<div className="mb-8 flex justify-center">
-						<Stack spacing={1}>
-							<Pagination
-								count={Math.ceil(totalPage / 20)}
-								page={page}
-								boundaryCount={2}
-								onChange={handlePage}
-								size="large"
-							/>
-						</Stack>
+						<Pagination
+							count={Math.ceil(totalPage / 20)}
+							page={page}
+							boundaryCount={2}
+							onChange={handlePage}
+							size="large"
+							defaultPage={1}
+						/>
 					</div>
 				</div>
 			)}

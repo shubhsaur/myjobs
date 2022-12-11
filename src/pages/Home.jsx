@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import hero from "../assets/hero.jpg";
 import adidas from "../assets/logos/Adidas.png";
 import adobe from "../assets/logos/adobe.png";
@@ -14,8 +14,20 @@ import siemens from "../assets/logos/siemens.png";
 import cvs from "../assets/logos/cvs-health.png";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
+import { useNavigate } from "react-router";
+import { AuthContext } from "../Context";
 
 const Home = () => {
+	const navigate = useNavigate();
+	const {loggedIn} = useContext(AuthContext);
+
+	const handleClick = () => {
+		if(loggedIn){
+			navigate('/dashboard');
+		}else{
+			navigate('/login')
+		}
+	}
 	return (
 		<div className="bg-[#f1faee]">
 			<header className="bg-[#1d3557] text-white">
@@ -28,7 +40,7 @@ const Home = () => {
 							<br /> My<span className="text-[#00b4d8]">Jobs</span>
 						</h2>
 						<div className="flex items-center justify-between">
-							<Button>Get Started</Button>
+							<Button onClick={handleClick}>Get Started</Button>
 						</div>
 					</div>
 					<div className="w-[45%] basis-[50%] md:flex hidden justify-center relative top-12 pr-16">

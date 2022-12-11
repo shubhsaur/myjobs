@@ -11,11 +11,11 @@ const Navbar = () => {
 	};
 	return (
 		<div>
-			<nav className="flex justify-between items-center pt-8 pb-4 px-16">
+			<nav className="flex justify-between items-center pt-8 pb-4 lg:px-16 px-4">
 				<h1 className="font-bold text-2xl select-none">
 					My<span className="text-[#00b4d8]">Jobs</span>
 				</h1>
-				<div className="flex justify-center items-center gap-8">
+				<div className="flex items-center gap-8">
 					<Link to="/" className="text-blue-300 font-medium hover:text-[#f0f0f0]">
 						Home
 					</Link>
@@ -33,7 +33,7 @@ const Navbar = () => {
 					)}
 				</div>
 			</nav>
-			<hr className="h-px mx-16 bg-gray-500 border-0 dark:bg-gray-700"></hr>
+			<hr className="h-px lg:mx-16 mx-4 bg-gray-500 border-0 dark:bg-gray-700"></hr>
 		</div>
 	);
 };

@@ -12,7 +12,8 @@ const style = {
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
-	width: 650,
+	width: "80%",
+	height: "80%",
 	bgcolor: "background.paper",
 	border: "2px solid #000",
 	boxShadow: 24,
@@ -52,7 +53,7 @@ const ApplicantModal = ({ open, handleClose }) => {
 									<h2 className="text-gray-800">No applications available!</h2>
 								</div>
 							) : (
-								<div className="bg-gray-200 flex flex-wrap justify-center gap-4 p-4 rounded-md">
+								<div className="bg-gray-200 flex flex-wrap justify-center gap-4 lg:p-4 rounded-md">
 								{applicantData &&
 									applicantData.map((data) => (
 										<div className="bg-white border-2 border-gray-500">

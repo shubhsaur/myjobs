@@ -1,44 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context";
+import {formValidationToaster, loginToaster} from "../Toaster.js"
 
 const Login = () => {
 	const { email, setEmail, password, setPassword, setJobData, setLoggedIn, page, setToken, setAuthData, setTotalPage } =
 		useContext(AuthContext);
-	const [error, setError] = useState("");
 	const navigate = useNavigate();
 	const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
-
-	const formValidationToaster = (err) => {
-		toast.error(`${err.request.status}: ${err.request.statusText}`, {
-			containerId: "formValidation",
-			position: "top-right",
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "colored",
-		});
-	};
-
-	const loginToaster = () =>
-		toast.success("Login Successful!", {
-			containerId: "login",
-			position: "top-right",
-			autoClose: 2000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "light",
-		});
 
 	const authenticateUser = async () => {
 		try {
