@@ -19,7 +19,7 @@ const Home = () => {
 	return (
 		<div className="bg-[#f1faee]">
 			<header className="bg-[#1d3557] text-white">
-				<Navbar />  
+				<Navbar />
 
 				<section className="flex lg:justify-between justify-center pb-8 px-8">
 					<div className="flex basis-[50%] flex-col pt-24 lg:pl-28 gap-8">
@@ -28,8 +28,8 @@ const Home = () => {
 							<br /> My<span className="text-[#00b4d8]">Jobs</span>
 						</h2>
 						<div className="flex items-center justify-between">
-                    <Button>Get Started</Button>
-					</div>
+							<Button>Get Started</Button>
+						</div>
 					</div>
 					<div className="w-[45%] basis-[50%] md:flex hidden justify-center relative top-12 pr-16">
 						<img

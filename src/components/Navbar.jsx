@@ -4,7 +4,7 @@ import { AuthContext } from "../Context";
 import DropDown from "./DropDown";
 
 const Navbar = () => {
-	const { loggedIn, setLoggedIn, authData } = useContext(AuthContext);
+	const { loggedIn, authData } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const handleLogin = () => {
 		navigate("/login");

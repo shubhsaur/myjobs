@@ -1,20 +1,20 @@
-// import axios from "axios";
+import axios from "axios";
 
-// const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
+const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
 
-// export const userLogin = async (email, password, api_token) => {
-// 	const response = await axios.post(`${BASE_URL}/auth/login`, {
-//         email: email,
-//         password: password,
-//     });
-//     api_token = response.data.data.token;
-// };
+export const getRecruiterJobs = async (token, page, setJobData, setTotalPage) => {
+	let data;
+	const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
+		headers: { Authorization: `${token}` },
+	});
+	data = response.data;
+	setJobData(data);
+	setTotalPage(data.data.metadata.count);
+};
 
-// export const getAllJobs = async(api_token, data, page, setJobData) => {
-//     const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
-//         headers: { Authorization: `${api_token}` },
-//     });
-
-//     data = response.data.data;
-//     setJobData(data);
-// }
+export const getApplicantsByJobId = async (id, token, setApplicantData) => {
+	const response = await axios.get(`${BASE_URL}/recruiters/jobs/${id}/candidates`, {
+		headers: { Authorization: `${token}` },
+	});
+	setApplicantData(response.data.data);
+};

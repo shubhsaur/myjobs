@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Button from "@mui/material/Button";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
@@ -26,7 +26,6 @@ const DropDown = () => {
 		if (anchorRef.current && anchorRef.current.contains(event.target)) {
 			return;
 		}
-
 		setOpen(false);
 	};
 

@@ -11,6 +11,7 @@ const Context = ({ children }) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [token, setToken] = useState("");
 	const [page, setPage] = useState(1);
+	const [totalPage, setTotalPage] = useState(1);
 	return (
 		<AuthContext.Provider
 			value={{
@@ -30,6 +31,8 @@ const Context = ({ children }) => {
 				setApplicantData,
 				authData,
 				setAuthData,
+				totalPage,
+				setTotalPage,
 			}}
 		>
 			{children}

@@ -6,67 +6,31 @@ import { AiFillHome } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import axios from "axios";
 import ApplicantModal from "../components/Modal";
 import notes from "../assets/notes.png";
 import Button from "../components/Button";
-
-const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
-
+import { getApplicantsByJobId, getRecruiterJobs } from "../api/jobsApi";
 
 const JobList = () => {
 	const [open, setOpen] = useState(false);
-
-	const { email, password, loggedIn, jobData, setJobData, page, setPage, setLoggedIn, setApplicantData } =
+	const { loggedIn, jobData, setJobData, page, setPage, setLoggedIn, setApplicantData, totalPage, token } =
 		useContext(AuthContext);
+
 	useEffect(() => {
-		handleChange();
-	}, [page]);
+		handlePage();
+		// eslint-disable-next-line
+	}, [setPage, page]);
 
 	const handleOpen = async (id) => {
 		setOpen(true);
-		let api_token;
-		let data;
-		const response = await axios.post(`${BASE_URL}/auth/login`, {
-			email: email,
-			password: password,
-		});
-		api_token = response.data.data.token;
-
-		const fetchApplicantData = async () => {
-			const response = await axios.get(`${BASE_URL}/recruiters/jobs/${id}/candidates`, {
-				headers: { Authorization: `${api_token}` },
-			});
-			data = response.data.data;
-			console.log(data);
-			setApplicantData(data);
-		};
-		fetchApplicantData();
+		getApplicantsByJobId(id, token, setApplicantData);
 	};
 	const handleClose = () => setOpen(false);
 
-	const handleChange = (event, value) => {
+	const handlePage = (event, value) => {
 		setPage(value);
-		const authorize = async () => {
-			let api_token;
-			let data;
-			const response = await axios.post(`${BASE_URL}/auth/login`, {
-				email: email,
-				password: password,
-			});
-			api_token = response.data.data.token;
-			setLoggedIn(true);
-
-			const fetchData = async () => {
-				const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
-					headers: { Authorization: `${api_token}` },
-				});
-				data = response.data.data;
-				setJobData(data);
-			};
-			fetchData();
-		};
-		authorize();
+		setLoggedIn(true);
+		getRecruiterJobs(token, page, setJobData);
 	};
 
 	return (
@@ -87,7 +51,7 @@ const JobList = () => {
 					</header>
 				</div>
 			)}
-			{jobData.data.length === 0 ? (
+			{jobData.data.datalength === 0 ? (
 				<div className="flex flex-col items-center justify-center gap-4 pt-8 h-[50vh]">
 					<img className="w-[8em] relative left-4" src={notes} alt="" />
 					<h2 className="text-gray-500">Your posted jobs will show here!</h2>
@@ -96,7 +60,7 @@ const JobList = () => {
 			) : (
 				<div>
 					<div className="flex flex-wrap justify-center gap-4">
-						{jobData.data.map((job) => {
+						{jobData.data.data.map((job) => {
 							return (
 								<div
 									key={job.id}
@@ -107,7 +71,7 @@ const JobList = () => {
 									<div className="flex items-center justify-between flex-wrap mt-12">
 										<span className="flex text-sm items-center">
 											<MdLocationOn />
-											{job.location}
+											<p className="break-words">{job.location}</p>
 										</span>
 										<button
 											onClick={() => handleOpen(job.id)}
@@ -123,7 +87,13 @@ const JobList = () => {
 					</div>
 					<div className="mb-8 flex justify-center">
 						<Stack spacing={1}>
-							<Pagination count={10} page={page} onChange={handleChange} size="large" />
+							<Pagination
+								count={Math.ceil(totalPage / 20)}
+								page={page}
+								boundaryCount={2}
+								onChange={handlePage}
+								size="large"
+							/>
 						</Stack>
 					</div>
 				</div>

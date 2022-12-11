@@ -1,19 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context";
+import { getRecruiterJobs } from "../api/jobsApi";
 
 const Login = () => {
-	const { email, setEmail, password, setPassword, setJobData, setLoggedIn, page, setToken, setAuthData } =
+	const { email, setEmail, password, setPassword, setJobData, setLoggedIn, page, setToken, setAuthData, setTotalPage } =
 		useContext(AuthContext);
-
 	const navigate = useNavigate();
+
 	const loginToaster = () =>
 		toast.success("Login Successful!", {
-			containerId: 'login',
+			containerId: "login",
 			position: "top-right",
 			autoClose: 2000,
 			hideProgressBar: false,
@@ -22,15 +23,12 @@ const Login = () => {
 			draggable: true,
 			progress: undefined,
 			theme: "light",
-			
 		});
-	const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
 
-	const authorize = async () => {
+	const authenticateUser = async () => {
 		let api_token;
-		let data;
 		const response = await axios.post(
-			`${BASE_URL}/auth/login`,
+			`https://jobs-api.squareboat.info/api/v1/auth/login`,
 			{
 				email: email,
 				password: password,
@@ -43,14 +41,9 @@ const Login = () => {
 		setAuthData(response.data.data);
 		setLoggedIn(true);
 		setToken(api_token);
-
+		
 		const fetchData = async () => {
-			const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
-				headers: { Authorization: `${api_token}` },
-			});
-
-			data = response.data.data;
-			setJobData(data);
+			getRecruiterJobs(api_token, page, setJobData, setTotalPage);
 			loginToaster();
 			navigate("/dashboard");
 		};
@@ -94,7 +87,11 @@ const Login = () => {
 						/>
 					</div>
 					<div className="flex items-center justify-between">
-						<Button onClick={authorize}>Login</Button>
+						<Button
+							onClick={authenticateUser}
+						>
+							Login
+						</Button>
 					</div>
 				</form>
 			</div>
