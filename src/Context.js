@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 const Context = ({ children }) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [authData, setAuthData] = useState([]);
 	const [jobData, setJobData] = useState([]);
 	const [applicantData, setApplicantData] = useState([]);
 	const [loggedIn, setLoggedIn] = useState(false);
@@ -27,6 +28,8 @@ const Context = ({ children }) => {
 				setPage,
 				applicantData,
 				setApplicantData,
+				authData,
+				setAuthData,
 			}}
 		>
 			{children}
