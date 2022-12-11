@@ -53,26 +53,26 @@ const ApplicantModal = ({ open, handleClose }) => {
 								</div>
 							) : (
 								<div className="bg-gray-200 flex flex-wrap justify-center gap-4 p-4 rounded-md">
-									{applicantData &&
-										applicantData.map((data) => (
-											<div className="bg-white border-2 border-gray-500">
-												<div className="flex gap-4 w-[250px] p-2">
-													<div className="flex justify-center items-center text-xl text-[#1d3557] font-medium bg-[#90e0ef] rounded-[50%] w-[40px] h-[40px]">
-														<h2 className="">{data.name[0].toUpperCase()}</h2>
-													</div>
-													<div>
-														<h2 className="text-[#1d3557] font-medium">{data.name}</h2>
-														<p className="text-gray-600 text-[0.7rem]">{data.email}</p>
-													</div>
+								{applicantData &&
+									applicantData.map((data) => (
+										<div className="bg-white border-2 border-gray-500">
+											<div className="flex gap-4 w-[250px] p-2">
+												<div className="flex justify-center items-center text-xl text-[#1d3557] font-medium bg-[#90e0ef] rounded-[50%] w-[40px] h-[40px]">
+													<h2 className="">{data.name[0].toUpperCase()}</h2>
 												</div>
-												<div className="p-2">
-													<h2 className="text-[0.8rem] font-bold text-[#1d3557]">Skills</h2>
-													<p className="text-[0.7rem] font-medium text-gray-800 break-words">{data.skills}</p>
+												<div>
+													<h2 className="text-[#1d3557] font-medium">{data.name}</h2>
+													<p className="text-gray-600 text-[0.7rem]">{data.email}</p>
 												</div>
 											</div>
-										))}
-								</div>
-							)}
+											<div className="p-2">
+												<h2 className="text-[0.8rem] font-bold text-[#1d3557]">Skills</h2>
+												<p className="text-[0.7rem] font-medium text-gray-800 break-words">{data.skills}</p>
+											</div>
+										</div>
+									))}
+							</div>)}
+							
 						</div>
 					</Box>
 				</Fade>

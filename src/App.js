@@ -17,6 +17,7 @@ function App() {
 				</Routes>
 				<ToastContainer enableMultiContainer containerId={'login'} />
 				<ToastContainer enableMultiContainer containerId={'logout'} />
+				<ToastContainer enableMultiContainer containerId={'formValidation'} />
 				;
 			</div>
 		</Router>

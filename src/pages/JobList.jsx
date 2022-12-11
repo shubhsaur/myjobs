@@ -24,6 +24,7 @@ const JobList = () => {
 	const handleOpen = async (id) => {
 		setOpen(true);
 		getApplicantsByJobId(id, token, setApplicantData);
+		
 	};
 	const handleClose = () => setOpen(false);
 
@@ -51,7 +52,7 @@ const JobList = () => {
 					</header>
 				</div>
 			)}
-			{jobData.data.datalength === 0 ? (
+			{jobData.data.data.length === 0 ? (
 				<div className="flex flex-col items-center justify-center gap-4 pt-8 h-[50vh]">
 					<img className="w-[8em] relative left-4" src={notes} alt="" />
 					<h2 className="text-gray-500">Your posted jobs will show here!</h2>

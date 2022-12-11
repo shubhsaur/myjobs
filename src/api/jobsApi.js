@@ -12,9 +12,10 @@ export const getRecruiterJobs = async (token, page, setJobData, setTotalPage) =>
 	setTotalPage(data.data.metadata.count);
 };
 
-export const getApplicantsByJobId = async (id, token, setApplicantData) => {
+export const getApplicantsByJobId = async (id, token, setApplicantData, setIsLoading) => {
 	const response = await axios.get(`${BASE_URL}/recruiters/jobs/${id}/candidates`, {
 		headers: { Authorization: `${token}` },
 	});
 	setApplicantData(response.data.data);
+	setIsLoading(false);
 };

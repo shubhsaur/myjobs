@@ -1,16 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context";
-import { getRecruiterJobs } from "../api/jobsApi";
 
 const Login = () => {
 	const { email, setEmail, password, setPassword, setJobData, setLoggedIn, page, setToken, setAuthData, setTotalPage } =
 		useContext(AuthContext);
+	const [error, setError] = useState("");
 	const navigate = useNavigate();
+	const BASE_URL = "https://jobs-api.squareboat.info/api/v1";
+
+	const formValidationToaster = (err) => {
+		toast.error(`${err.request.status}: ${err.request.statusText}`, {
+			containerId: "formValidation",
+			position: "top-right",
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "colored",
+		});
+	};
 
 	const loginToaster = () =>
 		toast.success("Login Successful!", {
@@ -26,28 +41,39 @@ const Login = () => {
 		});
 
 	const authenticateUser = async () => {
-		let api_token;
-		const response = await axios.post(
-			`https://jobs-api.squareboat.info/api/v1/auth/login`,
-			{
-				email: email,
-				password: password,
-			},
-			{
-				headers: { "Content-Type": "application/json" },
-			}
-		);
-		api_token = response.data.data.token;
-		setAuthData(response.data.data);
-		setLoggedIn(true);
-		setToken(api_token);
-		
-		const fetchData = async () => {
-			getRecruiterJobs(api_token, page, setJobData, setTotalPage);
-			loginToaster();
-			navigate("/dashboard");
-		};
-		fetchData();
+		try {
+			let api_token;
+			let data;
+			const response = await axios.post(
+				`https://jobs-api.squareboat.info/api/v1/auth/login`,
+				{
+					email: email,
+					password: password,
+				},
+				{
+					headers: { "Content-Type": "application/json" },
+				}
+			);
+			api_token = response.data.data.token;
+			setAuthData(response.data.data);
+			setLoggedIn(true);
+			setToken(api_token);
+
+			const fetchData = async () => {
+				const response = await axios.get(`${BASE_URL}/recruiters/jobs?page=${page}`, {
+					headers: { Authorization: `${api_token}` },
+				});
+				data = response.data;
+				setJobData(data);
+				setTotalPage(data.data.metadata.count);
+				loginToaster();
+				navigate("/dashboard");
+			};
+			fetchData();
+		} catch (err) {
+			console.log(err)
+			formValidationToaster(err);
+		}
 	};
 
 	return (
@@ -70,6 +96,7 @@ const Login = () => {
 							placeholder="Enter your email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
+							required
 						/>
 					</div>
 					<div className="mb-6">
@@ -84,14 +111,11 @@ const Login = () => {
 							placeholder="Enter your password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
+							required
 						/>
 					</div>
 					<div className="flex items-center justify-between">
-						<Button
-							onClick={authenticateUser}
-						>
-							Login
-						</Button>
+						<Button onClick={authenticateUser}>Login</Button>
 					</div>
 				</form>
 			</div>
